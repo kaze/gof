@@ -43,6 +43,8 @@ describe 'Game of Life' do
       expect(subject.respond_to?(:grid)).to be_truthy
       expect(subject.respond_to?(:cells)).to be_truthy
       expect(subject.respond_to?(:living_neighbours_of)).to be_truthy
+      expect(subject.respond_to?(:live_cells)).to be_truthy
+      expect(subject.respond_to?(:populate)).to be_truthy
     end
 
     it 'should create a proper grid on initialization' do
@@ -53,7 +55,13 @@ describe 'Game of Life' do
           expect(col.is_a?(Cell)).to be_truthy
         end
       end
-      expect(subject.cells.size).to eq(9)
+      expect(subject.cells.size).to eq(15)
+    end
+
+    it 'should populate the world randomly' do
+      expect(subject.live_cells.count).to eq(0)
+      subject.populate
+      expect(subject.live_cells.count).to_not eq(0)
     end
 
     it 'should detect a neighbour to the NorthWest' do

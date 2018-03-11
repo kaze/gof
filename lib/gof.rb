@@ -27,22 +27,29 @@ end
 class World
   attr_accessor :rows, :cols, :grid, :cells
 
-  def initialize(rows=3, cols=3)
+  def initialize(rows=3, cols=5)
     @rows = rows
     @cols = cols
     @cells = []
     @grid = Array.new(@rows) do |row|
       Array.new(@cols) do |col|
-        cell = Cell.new(x=col, y=row)
+        cell = Cell.new(x=row, y=col)
         @cells << cell
         cell
       end
     end
   end
 
-  # [[Cell, Cell, Cell],
-  #  [Cell, Cell, Cell],
-  #  [Cell, Cell, Cell]]
+  def live_cells
+    @cells.select { |cell| cell.alive }
+  end
+
+  def populate
+    @cells.each do |cell|
+      cell.alive = [true, false].sample
+    end
+  end
+
   def living_neighbours_of(cell)
     living_neighbours = []
 
@@ -53,43 +60,43 @@ class World
     end
 
     # detect living neighbour to the North
-    if cell.x > 0 and cell.y <= (@rows - 1)
+    if cell.x > 0 and cell.y <= (@cols - 1)
       candidate_north = @grid[cell.x - 1][cell.y]
       living_neighbours << candidate_north if candidate_north.alive?
     end
 
     # detect living neighbour to the NorthEast
-    if cell.x > 0 and cell.y < (@rows - 1)
+    if cell.x > 0 and cell.y < (@cols - 1)
       candidate_north_east = @grid[cell.x - 1][cell.y + 1]
       living_neighbours << candidate_north_east if candidate_north_east.alive?
     end
 
     # detect living neighbour to the East
-    if cell.x <= (@cols - 1) and cell.y > 0
+    if cell.x <= (@rows - 1) and cell.y > 0
       candidate_east = @grid[cell.x][cell.y - 1]
       living_neighbours << candidate_east if candidate_east.alive?
     end
 
     # detect living neighbour to the West
-    if cell.x <= (@cols - 1) and cell.y < (@rows - 1)
+    if cell.x <= (@rows - 1) and cell.y < (@cols - 1)
       candidate_west = @grid[cell.x][cell.y + 1]
       living_neighbours << candidate_west if candidate_west.alive?
     end
 
     # detect living neighbour to the SouthWest
-    if cell.x < (@cols - 1) and cell.y > 0
+    if cell.x < (@rows - 1) and cell.y > 0
       candidate_south_west = @grid[cell.x + 1][cell.y - 1]
       living_neighbours << candidate_south_west if candidate_south_west.alive?
     end
 
     # detect living neighbour to the South
-    if cell.x < (@cols - 1) and cell.y <= (@rows - 1)
+    if cell.x < (@rows - 1) and cell.y <= (@cols - 1)
       candidate_south = @grid[cell.x + 1][cell.y]
       living_neighbours << candidate_south if candidate_south.alive?
     end
 
     # detect living neighbour to the SouthEast
-    if cell.x < (@cols - 1) and cell.y < (@rows - 1)
+    if cell.x < (@rows - 1) and cell.y < (@cols - 1)
       candidate_south_east = @grid[cell.x + 1][cell.y + 1]
       living_neighbours << candidate_south_east if candidate_south_east.alive?
     end
